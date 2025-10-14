@@ -10,12 +10,12 @@ const Cart = ({ CartItem, addToCart, decreaseQty }) => {
     <>
       <section className='cart-items'>
         <div className='container d_flex'>
-          {/* if hamro cart ma kunai pani item xaina bhane no diplay */}
+          {/* if there are no items in the cart to display than display nothing*/}
 
           <div className='cart-details'>
             {CartItem.length === 0 && <h1 className='no-items product'>No Items are add in Cart</h1>}
 
-            {/* yasma hami le cart item lai display garaaxa */}
+            {/* here we will display the cart items */}
             {CartItem.map((item) => {
               const productQty = item.price * item.qty
 
@@ -37,8 +37,9 @@ const Cart = ({ CartItem, addToCart, decreaseQty }) => {
                         <i className='fa-solid fa-xmark'></i>
                       </button>
                     </div>
-                    {/* stpe: 5 
-                    product ko qty lai inc ra des garne
+                    {/* step: 5 
+                    increase or decrease the product quantity
+                   
                     */}
                     <div className='cartControl d_flex'>
                       <button className='incCart' onClick={() => addToCart(item)}>
