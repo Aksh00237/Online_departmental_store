@@ -1,70 +1,105 @@
-# Getting Started with Create React App
+# Online Departmental Store
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A responsive e-commerce frontend built with **React.js, JavaScript, HTML and CSS**. It covers the core shopping flow: browse products, filter by category, and manage a cart with live quantity and total updates.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Product listing:** responsive grid of product cards (image, name, price, Add to Cart)
+- **Category filters:** filter products by category, with an "All" option to reset
+- **Search:** filter products by name, combined with the category filter
+- **Cart management:** add items, change quantity with +/−, remove items, live subtotal and item count
+- **Persistent cart:** cart is saved to `localStorage`, so it survives a page refresh
+- **Responsive layout:** works on mobile, tablet and desktop
+- **10+ reusable UI components**, such as ProductCard, CategoryFilter, CartItem and QuantitySelector
 
-### `npm start`
+## Tech stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| Layer | Used |
+|---|---|
+| UI | React.js (functional components + hooks) |
+| State | React Context + `useReducer` for the cart, local state for UI |
+| Styling | CSS3 (Flexbox, Grid, media queries), mobile-first |
+| Language | JavaScript (ES6+), HTML5 |
+| Tooling | Create React App, npm |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Architecture
 
-### `npm test`
+```
+App
+├── Navbar
+│   ├── SearchBar
+│   └── CartIcon (item count badge)
+├── CategoryFilter
+├── ProductGrid
+│   └── ProductCard × N
+├── CartDrawer / CartPage
+│   ├── CartItem × N
+│   │   └── QuantitySelector
+│   └── CartSummary (subtotal)
+├── EmptyState / Toast
+└── Footer
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+CartContext (useReducer)  ← single source of truth for the cart
+localStorage              ← cart persisted on every change
+```
 
-### `npm run build`
+### State management
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Cart** lives in one `CartContext` backed by a reducer, so the navbar badge, product cards and cart page always stay in sync without prop drilling.
+- Reducer actions: `ADD_ITEM`, `REMOVE_ITEM`, `UPDATE_QTY`, `CLEAR_CART`.
+- Cart shape: `[{ id, name, price, qty }]`.
+- **Derived, not stored:** the cart total, item count and filtered product list are computed from state (`useMemo`) instead of being kept as separate state, which avoids out-of-sync bugs.
+- State updates are immutable (new arrays and objects), so React re-renders correctly.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Performance
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- `React.memo` on `ProductCard` so a cart update doesn't re-render every card
+- `useMemo` for the filtered product list, `useCallback` for handlers passed to memoized children
+- Stable keys (`key={product.id}`), not array indexes
+- Lazy-loaded images (`loading="lazy"`)
 
-### `npm run eject`
+## How it works
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **Load:** products are loaded from a local JSON/mock data source and rendered in the grid.
+2. **Filter / search:** choosing a category or typing in search updates state; the visible list is recomputed.
+3. **Add to cart:** if the product is already in the cart its quantity increases, otherwise it is added with quantity 1. The badge updates instantly.
+4. **Cart:** +/− updates quantity (reaching 0 removes the item); the subtotal is `Σ price × qty`.
+5. **Persist:** every cart change is written to `localStorage` and restored on the next load.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Getting started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**Prerequisites:** Node.js 16+ and npm.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+git clone <repo-url>
+cd online-departmental-store
+npm install
+npm start
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Available scripts
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| Command | What it does |
+|---|---|
+| `npm start` | Runs the app in development mode with hot reload |
+| `npm test` | Runs the test runner in watch mode |
+| `npm run build` | Creates an optimized production build in `build/` |
 
-### Code Splitting
+## Project structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+src/
+├── components/   # Navbar, ProductCard, CartItem, QuantitySelector, ...
+├── context/      # CartContext + cart reducer
+├── data/         # product data
+├── App.js
+└── index.js
+```
 
-### Analyzing the Bundle Size
+## Known limitations and next steps
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- No backend yet: products come from local data and checkout isn't implemented. Next: a Spring Boot + MySQL API for products and orders.
+- Prices are calculated on the client for display only; a real checkout must re-validate prices on the server.
+- Next: React Router (product detail and checkout pages), pagination for large catalogs, unit tests for the cart reducer with Jest and React Testing Library, and accessibility improvements (keyboard navigation, ARIA labels).
