@@ -91,9 +91,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```
 src/
-├── components/   # Navbar, ProductCard, CartItem, QuantitySelector, ...
-├── context/      # CartContext + cart reducer
-├── data/         # product data
+├── components/   
+├── context/      
+├── pages/         
 ├── App.js
 └── index.js
 ```
