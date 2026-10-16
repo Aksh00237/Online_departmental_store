@@ -60,7 +60,7 @@ localStorage              ← cart persisted on every change
 
 ## How it works
 
-1. **Load:** products are loaded from a local JSON/mock data source and rendered in the grid.
+1. **Load:** products are loaded from a local JSON and rendered in the grid.
 2. **Filter / search:** choosing a category or typing in search updates state; the visible list is recomputed.
 3. **Add to cart:** if the product is already in the cart its quantity increases, otherwise it is added with quantity 1. The badge updates instantly.
 4. **Cart:** +/− updates quantity (reaching 0 removes the item); the subtotal is `Σ price × qty`.
